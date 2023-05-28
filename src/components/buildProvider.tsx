@@ -34,10 +34,10 @@ export type DataElement =
 
 export const BuildProvider: React.FC<{
   title: string
-  //   onClick: (provider: string, type: DataElement) => void
+  onClick: (provider: string, type: DataElement, isInput: boolean) => void
   type: "main" | "secondary"
   invalidUrl: boolean
-}> = ({ title, type, invalidUrl }) => {
+}> = ({ title, type, invalidUrl, onClick }) => {
   const [isProviderSelected, setIsProviderSelected] = useState<boolean>(false)
   const [selectedProvider, setSelectedProvider] = useState<
     "youtube" | "twitch" | null
@@ -52,7 +52,7 @@ export const BuildProvider: React.FC<{
     if (!isInput) {
       setSelectedProvider(provider as typeof selectedProvider)
     }
-    // onClick(provider, type)
+    onClick(provider, type, isInput)
   }
 
   return (
@@ -84,11 +84,10 @@ export const BuildProvider: React.FC<{
           <Input
             id={`${type}StreamProviderInput`}
             placeholder="Insert your stream url..."
-            // onBlur={(e) =>
-            //   onProviderClick(e.target.value, `${type}StreamUrl`, true)
-            // }
-            isValid={invalidUrl}
-            className="text-white"
+            onBlur={(e) =>
+              onProviderClick(e.target.value, `${type}StreamUrl`, true)
+            }
+            invalid={invalidUrl}
           />
         </div>
       )}
