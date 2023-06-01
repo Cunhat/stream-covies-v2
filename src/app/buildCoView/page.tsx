@@ -1,10 +1,11 @@
 "use client"
 
-import { type } from "os"
 import { useState } from "react"
-import Image from "next/image"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { z } from "zod"
 
+import { Button } from "@/components/ui/button"
 import { BuildProvider } from "@/components/buildProvider"
 
 type Data = {
@@ -25,8 +26,6 @@ const UrlSchema = z
     }
   )
 
-type Url = z.infer<typeof UrlSchema>
-
 export type DataElement =
   | "mainStreamProvider"
   | "mainStreamUrl"
@@ -43,6 +42,7 @@ export default function BuildCoView() {
   const [isInvalidMainUrl, setIsInvalidMainUrl] = useState<boolean>(false)
   const [isInvalidSecondaryUrl, setIsInvalidSecondaryUrl] =
     useState<boolean>(false)
+  const router = useRouter()
 
   const checkIfIsValidUrl = (url: string) => {
     return UrlSchema.safeParse(url).success
@@ -73,23 +73,46 @@ export default function BuildCoView() {
     setData(newData)
   }
 
-  const checkIfCanGenerate = () => {
-    console.log(
-      data.mainStreamProvider !== "" &&
-        data.mainStreamUrl !== "" &&
-        data.secondaryStreamProvider !== "" &&
-        data.secondaryStreamUrl !== "" &&
-        !isInvalidMainUrl &&
-        !isInvalidSecondaryUrl
-    )
-    return (
-      data.mainStreamProvider !== "" &&
-      data.mainStreamUrl !== "" &&
-      data.secondaryStreamProvider !== "" &&
-      data.secondaryStreamUrl !== "" &&
-      !isInvalidMainUrl &&
-      !isInvalidSecondaryUrl
-    )
+  const checkIfCanGenerate = () =>
+    data.mainStreamProvider !== "" &&
+    data.mainStreamUrl !== "" &&
+    data.secondaryStreamProvider !== "" &&
+    data.secondaryStreamUrl !== "" &&
+    !isInvalidMainUrl &&
+    !isInvalidSecondaryUrl
+
+  const trimProviders = () => {
+    const newData = { ...data }
+
+    if (newData.mainStreamProvider === "youtube") {
+      newData.mainStreamUrl = newData.mainStreamUrl.replace(
+        "https://www.youtube.com/watch?v=",
+        ""
+      )
+    } else {
+      newData.mainStreamUrl = newData.mainStreamUrl.replace(
+        "https://www.twitch.tv/",
+        ""
+      )
+    }
+
+    if (newData.secondaryStreamProvider === "youtube") {
+      newData.secondaryStreamUrl = newData.secondaryStreamUrl.replace(
+        "https://www.youtube.com/watch?v=",
+        ""
+      )
+    } else {
+      newData.secondaryStreamUrl = newData.secondaryStreamUrl.replace(
+        "https://www.twitch.tv/",
+        ""
+      )
+    }
+    return newData
+  }
+
+  const navigateToCoView = () => {
+    const url = new URLSearchParams(trimProviders()).toString()
+    router.push(`/coView?${url}`)
   }
 
   return (
@@ -99,14 +122,22 @@ export default function BuildCoView() {
         title="Main Stream"
         onClick={chooseStreamHandler}
         type="main"
-        invalidUrl={isInvalidMainUrl}
+        // invalidUrl={isInvalidMainUrl}
       />
       <BuildProvider
         title="Secondary Stream"
         onClick={chooseStreamHandler}
         type="secondary"
-        invalidUrl={isInvalidSecondaryUrl}
+        // invalidUrl={isInvalidSecondaryUrl}
       />
+
+      <Button
+        variant="default"
+        disabled={!checkIfCanGenerate()}
+        onClick={() => navigateToCoView()}
+      >
+        Generate
+      </Button>
     </main>
   )
 }

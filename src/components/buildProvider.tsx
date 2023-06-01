@@ -4,6 +4,7 @@ import { useState } from "react"
 import { faTwitch, faYoutube } from "@fortawesome/free-brands-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { cva } from "class-variance-authority"
+import { z } from "zod"
 
 import { Input } from "@/components/ui/input"
 
@@ -32,16 +33,35 @@ export type DataElement =
   | "secondaryStreamProvider"
   | "secondaryStreamUrl"
 
+const YoutubeUrlSchema = z
+  .union([z.string().url().nonempty(), z.literal("")])
+  .refine((value) => value.includes("https://www.youtube.com/"), {
+    message: "String must contain Youtube or Twitch URL",
+  })
+const TwitchUrlSchema = z
+  .union([z.string().url().nonempty(), z.literal("")])
+  .refine((value) => value.includes("https://www.twitch.tv/"), {
+    message: "String must contain Youtube or Twitch URL",
+  })
+
 export const BuildProvider: React.FC<{
   title: string
   onClick: (provider: string, type: DataElement, isInput: boolean) => void
   type: "main" | "secondary"
-  invalidUrl: boolean
-}> = ({ title, type, invalidUrl, onClick }) => {
+}> = ({ title, type, onClick }) => {
   const [isProviderSelected, setIsProviderSelected] = useState<boolean>(false)
   const [selectedProvider, setSelectedProvider] = useState<
     "youtube" | "twitch" | null
   >(null)
+  const [isInvalidUrl, setIsInvalidUrl] = useState<boolean>(false)
+
+  const checkIfIsValidUrl = (url: string, provider: "youtube" | "twitch") => {
+    if (provider === "youtube") {
+      setIsInvalidUrl(!YoutubeUrlSchema.safeParse(url).success)
+    } else {
+      setIsInvalidUrl(!TwitchUrlSchema.safeParse(url).success)
+    }
+  }
 
   const onProviderClick = (
     provider: string | "youtube" | "twitch",
@@ -51,6 +71,8 @@ export const BuildProvider: React.FC<{
     setIsProviderSelected(true)
     if (!isInput) {
       setSelectedProvider(provider as typeof selectedProvider)
+    } else {
+      checkIfIsValidUrl(provider, selectedProvider!)
     }
     onClick(provider, type, isInput)
   }
@@ -81,14 +103,21 @@ export const BuildProvider: React.FC<{
       {isProviderSelected && (
         <div className="flex w-4/5 max-w-md flex-col gap-4 md:w-3/5">
           <h2 className="text-xl font-bold text-white">Insert stream url</h2>
-          <Input
-            id={`${type}StreamProviderInput`}
-            placeholder="Insert your stream url..."
-            onBlur={(e) =>
-              onProviderClick(e.target.value, `${type}StreamUrl`, true)
-            }
-            invalid={invalidUrl}
-          />
+          <div className="flex flex-col gap-1">
+            <Input
+              id={`${type}StreamProviderInput`}
+              placeholder="Insert your stream url..."
+              onBlur={(e) =>
+                onProviderClick(e.target.value, `${type}StreamUrl`, true)
+              }
+              invalid={isInvalidUrl}
+            />
+            {isInvalidUrl && (
+              <p className="pl-2 text-left text-xs font-semibold text-red-500">
+                Invalid Url
+              </p>
+            )}
+          </div>
         </div>
       )}
     </div>
