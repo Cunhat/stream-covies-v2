@@ -122,13 +122,11 @@ export default function BuildCoView() {
         title="Main Stream"
         onClick={chooseStreamHandler}
         type="main"
-        // invalidUrl={isInvalidMainUrl}
       />
       <BuildProvider
         title="Secondary Stream"
         onClick={chooseStreamHandler}
         type="secondary"
-        // invalidUrl={isInvalidSecondaryUrl}
       />
 
       <Button
