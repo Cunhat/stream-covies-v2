@@ -1,9 +1,11 @@
 "use client"
 
-import React from "react"
+import React, { useMemo } from "react"
 import z from "zod"
 
 import { Button } from "@/components/ui/button"
+import { TwitchChat } from "@/components/ui/twitchChat"
+import { YoutubeChat } from "@/components/ui/youtubeChat"
 import MainStream from "@/components/mainStream"
 
 const CoViewSchema = z.object({
@@ -17,6 +19,20 @@ const CoView: React.FC<{
   searchParams: { [key: string]: string | string[] | undefined }
 }> = ({ searchParams }) => {
   const [showChat, setShowChat] = React.useState<boolean>(true)
+
+  const getTwitchChatChannel = () => {
+    if (searchParams?.mainStreamProvider === "twitch") {
+      return searchParams?.mainStreamUrl
+    } else if (searchParams?.secondaryStreamProvider === "twitch") {
+      return searchParams?.secondaryStreamUrl
+    } else {
+      return ""
+    }
+  }
+
+  const twitchChannel = useMemo(() => {
+    return getTwitchChatChannel() as string
+  }, [])
 
   if (!CoViewSchema.safeParse(searchParams).success) {
     return (
@@ -40,11 +56,17 @@ const CoView: React.FC<{
           </div>
           <div className="flex justify-end gap-3 p-3">
             <Button variant="secondary">Full Screen</Button>
-            <Button onClick={() => setShowChat(!showChat)}>Hide Chat</Button>
+            {twitchChannel !== "" && (
+              <Button onClick={() => setShowChat(!showChat)}>Hide Chat</Button>
+            )}
           </div>
         </div>
       </div>
-      {showChat && <div className="h-full w-80 bg-slate-200"></div>}
+      {showChat && twitchChannel !== "" && (
+        <div className="h-full w-80 ">
+          <TwitchChat channel={getTwitchChatChannel() as string} />
+        </div>
+      )}
     </div>
   )
 }
