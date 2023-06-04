@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useMemo } from "react"
+import { FullScreen, useFullScreenHandle } from "react-full-screen"
 import z from "zod"
 
 import { Button } from "@/components/ui/button"
@@ -19,6 +20,7 @@ const CoView: React.FC<{
   searchParams: { [key: string]: string | string[] | undefined }
 }> = ({ searchParams }) => {
   const [showChat, setShowChat] = React.useState<boolean>(true)
+  const fullscreen = useFullScreenHandle()
 
   const getTwitchChatChannel = () => {
     if (searchParams?.mainStreamProvider === "twitch") {
@@ -48,14 +50,21 @@ const CoView: React.FC<{
     <div className="flex h-screen">
       <div className="h-full flex-1 ">
         <div className="flex h-full flex-col">
-          <div className="flex flex-1  px-2 pt-2">
-            <MainStream
-              channel={searchParams.mainStreamUrl as string}
-              provider={searchParams.mainStreamProvider as string}
-            />
+          <div className="flex flex-1 px-2 pt-2">
+            <FullScreen className="flex-1" handle={fullscreen}>
+              <MainStream
+                channel={searchParams.mainStreamUrl as string}
+                provider={searchParams.mainStreamProvider as string}
+              />
+            </FullScreen>
           </div>
           <div className="flex justify-end gap-3 p-3">
-            <Button variant="secondary">Full Screen</Button>
+            <Button
+              variant="secondary"
+              onClick={fullscreen.active ? fullscreen.exit : fullscreen.enter}
+            >
+              Full Screen
+            </Button>
             {twitchChannel !== "" && (
               <Button onClick={() => setShowChat(!showChat)}>Hide Chat</Button>
             )}
