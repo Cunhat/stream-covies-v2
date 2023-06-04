@@ -7,7 +7,8 @@ import z from "zod"
 import { Button } from "@/components/ui/button"
 import { TwitchChat } from "@/components/ui/twitchChat"
 import { YoutubeChat } from "@/components/ui/youtubeChat"
-import MainStream from "@/components/mainStream"
+import DraggableStream from "@/components/draggableStream"
+import Stream from "@/components/stream"
 
 const CoViewSchema = z.object({
   mainStreamProvider: z.string(),
@@ -52,9 +53,14 @@ const CoView: React.FC<{
         <div className="flex h-full flex-col">
           <div className="flex flex-1 px-2 pt-2">
             <FullScreen className="flex-1" handle={fullscreen}>
-              <MainStream
+              <Stream
                 channel={searchParams.mainStreamUrl as string}
                 provider={searchParams.mainStreamProvider as string}
+                id={`mainStream${searchParams.mainStreamProvider}`}
+              />
+              <DraggableStream
+                channel={searchParams.secondaryStreamUrl as string}
+                provider={searchParams.secondaryStreamProvider as string}
               />
             </FullScreen>
           </div>
