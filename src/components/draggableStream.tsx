@@ -96,7 +96,7 @@ const DraggableStream: React.FC<{
               className="text-xl text-neutral-500"
             />
           </DefaultSelectTrigger>
-          <SelectContent className="z-[1001] bg-slate-600">
+          <SelectContent className="z-[1001] ">
             <SelectGroup>
               <SelectItem value="extraSmall">Extra Small</SelectItem>
               <SelectItem value="small">Small</SelectItem>
@@ -105,19 +105,6 @@ const DraggableStream: React.FC<{
             </SelectGroup>
           </SelectContent>
         </Select>
-        {/* <Select
-          value={selectedSize}
-          data={SIZES}
-          onChange={setSelectedSize}
-          button={
-            <Listbox.Button className="">
-              <FontAwesomeIcon
-                icon={faGear}
-                className="text-xl text-neutral-500"
-              />
-            </Listbox.Button>
-          }
-        /> */}
       </div>
       <Stream channel={channel} provider={provider} id="floatingStream" />
     </animated.div>
