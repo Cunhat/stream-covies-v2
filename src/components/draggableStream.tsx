@@ -15,9 +15,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select"
 import Stream from "@/components/stream"
 
@@ -38,18 +35,6 @@ const DraggableStreamStyles = cva(
   }
 )
 
-// type DraggableStreamSizes = {
-//   value: "extraSmall" | "small" | "medium" | "large"
-//   label: string
-// }
-
-// const SIZES: Array<DraggableStreamSizes> = [
-//   { value: "extraSmall", label: "Extra Small" },
-//   { value: "small", label: "Small" },
-//   { value: "medium", label: "Medium" },
-//   { value: "large", label: "Large" },
-// ]
-
 type StreamSize = "extraSmall" | "small" | "medium" | "large"
 
 const DraggableStream: React.FC<{
@@ -64,13 +49,13 @@ const DraggableStream: React.FC<{
     ({ down, offset: [ox, oy] }) =>
       api.start({ x: ox, y: oy, immediate: down }),
     {
-      bounds: { left: 0, right: width - 160, top: 0, bottom: height - 100 },
+      bounds: { left: 0, right: width - 370, top: 0, bottom: height - 200 },
+      rubberband: true,
     }
   )
 
   const handleChange = (value: string) => {
     setSelectedSize(value as StreamSize)
-    console.log(value)
   }
 
   return (
@@ -87,14 +72,8 @@ const DraggableStream: React.FC<{
       />
       <div className="absolute left-2 top-2 opacity-0 group-hover:opacity-100">
         <Select onValueChange={handleChange} defaultValue={selectedSize}>
-          {/* <SelectTrigger className="w-10 bg-white">
-            <SelectValue placeholder="Select a fruit" />
-          </SelectTrigger> */}
           <DefaultSelectTrigger>
-            <FontAwesomeIcon
-              icon={faGear}
-              className="text-xl text-neutral-500"
-            />
+            <FontAwesomeIcon icon={faGear} className="text-xl text-pink-500" />
           </DefaultSelectTrigger>
           <SelectContent className="z-[1001] ">
             <SelectGroup>
@@ -111,4 +90,4 @@ const DraggableStream: React.FC<{
   )
 }
 
-export default React.memo(DraggableStream)
+export default DraggableStream

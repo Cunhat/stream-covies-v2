@@ -48,7 +48,7 @@ const CoView: React.FC<{
   console.log(searchParams)
 
   return (
-    <div className="flex h-screen">
+    <div className="relative flex h-screen">
       <div className="h-full flex-1 ">
         <div className="flex h-full flex-col">
           <div className="flex flex-1 px-2 pt-2">
