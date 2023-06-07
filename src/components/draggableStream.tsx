@@ -90,12 +90,12 @@ const DraggableStream: React.FC<{
         icon={faMaximize}
         height={30}
         width={30}
-        className="absolute right-2 top-2 text-xl text-neutral-500 opacity-0 hover:cursor-grab group-hover:opacity-100"
+        className="absolute right-2 top-2 text-xl text-white opacity-0 hover:cursor-grab group-hover:opacity-100"
       />
       <div className="absolute left-2 top-2 opacity-0 group-hover:opacity-100">
         <Select onValueChange={handleChange} defaultValue={selectedSize}>
           <DefaultSelectTrigger>
-            <FontAwesomeIcon icon={faGear} className="text-xl text-pink-500" />
+            <FontAwesomeIcon icon={faGear} className="text-xl text-white" />
           </DefaultSelectTrigger>
           <SelectContent className="z-[1001] ">
             <SelectGroup>
