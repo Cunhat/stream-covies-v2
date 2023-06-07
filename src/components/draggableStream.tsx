@@ -35,6 +35,20 @@ const DraggableStreamStyles = cva(
   }
 )
 
+const MaxY = {
+  extraSmall: 100,
+  small: 200,
+  medium: 400,
+  large: 600,
+}
+
+const MaxX = {
+  extraSmall: 150,
+  small: 360,
+  medium: 600,
+  large: 900,
+}
+
 type StreamSize = "extraSmall" | "small" | "medium" | "large"
 
 const DraggableStream: React.FC<{
@@ -45,11 +59,19 @@ const DraggableStream: React.FC<{
   const [selectedSize, setSelectedSize] = useState<StreamSize>("small")
   const { width, height } = useWindowSize()
 
+  const getMaxYDrag = MaxY[selectedSize]
+  const getMaxXDrag = MaxX[selectedSize]
+
   const bind = useDrag(
     ({ down, offset: [ox, oy] }) =>
       api.start({ x: ox, y: oy, immediate: down }),
     {
-      bounds: { left: 0, right: width - 370, top: 0, bottom: height - 200 },
+      bounds: {
+        left: 0,
+        right: width - getMaxXDrag,
+        top: 0,
+        bottom: height - getMaxYDrag,
+      },
       rubberband: true,
     }
   )
